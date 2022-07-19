@@ -18,10 +18,10 @@ var (
 	state = "abc123"
 )
 
-func spotifyLogin(w http.ResponseWriter, r *http.Request) {
+func spotifyLogin(w http.ResponseWriter, r *http.Request){
 	url := auth.AuthURL(state)
 	fmt.Println("Please log in to Spotify by visiting the following page in your browser:", url)
-
+	
 	// wait for auth to complete
 	client := <-ch
 
@@ -31,7 +31,7 @@ func spotifyLogin(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	fmt.Println("You are logged in as:", user.ID)	
+	fmt.Println("You are logged in as:", user.ID)
 }
 
 func completeAuth(w http.ResponseWriter, r *http.Request) {
@@ -63,8 +63,8 @@ func completeAuth(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Playlists:", playlists.Playlists)
 
 
-
-
 	fmt.Fprintf(w, "Login Completed!")
 	ch <- client
+	close(ch)
+
 }
