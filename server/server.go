@@ -25,18 +25,7 @@ type Songs struct {
 
 func main() {
 	ctx := context.Background()
-	config := &clientcredentials.Config{
-		ClientID:     os.Getenv("SPOTIFY_ID"),
-		ClientSecret: os.Getenv("SPOTIFY_SECRET"),
-		TokenURL:     spotifyauth.TokenURL,
-	}
-	token, err := config.Token(ctx)
-	if err != nil {
-		log.Fatalf("couldn't get token: %v", err)
-	}
-
-	httpClient := spotifyauth.New().Client(ctx, token)
-	client := spotify.New(httpClient)
+	client := authClient()
 
 	http.HandleFunc("/get_playlist_songs", func(w http.ResponseWriter, r *http.Request) {
 		results, err := client.GetPlaylistItems(ctx, "59eBtjSiUluqHX1BweDZgu")
@@ -44,7 +33,7 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 
-		fmt.Fprintf(w, results.Items[1].Track.Track.Name)
+		fmt.Fprintf(w, results.Items[2].Track.Track.Name)
 
 	})
 
