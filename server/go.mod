@@ -6,6 +6,7 @@ require github.com/zmb3/spotify/v2 v2.2.1
 
 require (
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/radovskyb/watcher v1.0.7 // indirect
 	github.com/robfig/cron/v3 v3.0.0 // indirect
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d // indirect
 	golang.org/x/oauth2 v0.0.0-20210810183815-faf39c7919d5 // indirect
