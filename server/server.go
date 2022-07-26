@@ -1,11 +1,9 @@
 package main
 
 import (
-	"context"
-
 	"fmt"
-	"log"
-	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Playlist struct {
@@ -19,21 +17,19 @@ type Songs struct {
 	artist    string
 }
 
+var Client = authClient()
+
 func main() {
-	ctx := context.Background()
-	client := authClient()
+	router := gin.Default()
 
-	http.HandleFunc("/get_playlist_songs", getSpotifyPlaylistSongs(w http.ResponseWriter, r *http.Request, client))
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello!")
+	router.GET("/get_spotify_playlist_songs", getSpotifyPlaylistSongs)
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
 	})
 
 	fmt.Printf("Starting server at port 8080\n")
 
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		log.Fatal(err)
-	}
+	router.Run()
 }
-
-

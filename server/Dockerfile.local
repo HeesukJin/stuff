@@ -1,1 +1,14 @@
-f
+FROM golang:1.18.4-alpine
+
+
+WORKDIR /app
+COPY go.mod ./
+COPY go.sum ./
+RUN go get -v github.com/radovskyb/watcher/...
+
+
+RUN go mod download
+
+COPY *.go ./
+
+CMD ["watcher", "-cmd=\"go run main.go\""]
