@@ -1,14 +1,15 @@
 FROM golang:1.18.4-alpine
 
+WORKDIR /go/bin
+
+RUN go install github.com/canthefason/go-watcher/cmd/watcher@latest
 
 WORKDIR /app
 COPY go.mod ./
 COPY go.sum ./
-RUN go get -v github.com/radovskyb/watcher/...
-
 
 RUN go mod download
 
 COPY *.go ./
 
-CMD ["watcher", "-cmd=\"go run main.go\""]
+ENTRYPOINT [ "/go/bin/watcher" ]

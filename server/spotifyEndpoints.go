@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-	//"os"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zmb3/spotify/v2"
@@ -15,8 +15,8 @@ import (
 func authClient() *spotify.Client {
 	ctx := context.Background()
 	config := &clientcredentials.Config{
-		ClientID:     "5731fe965737499186663c59665746d5",
-		ClientSecret: "ce32ecddb8d84b13adc81413fe1d9242",
+		ClientID:     os.Getenv("SPOTIFY_ID"),
+		ClientSecret: os.Getenv("SPOTIFY_SECRET"),
 		TokenURL:     spotifyauth.TokenURL,
 	}
 	token, err := config.Token(ctx)

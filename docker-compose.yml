@@ -1,12 +1,12 @@
 version: "3.9"
 services:
   server:
-    build: 
+    build:
       context: ./server
       dockerfile: Dockerfile.local
     ports:
       - "8080:8080"
     volumes:
-      - ./server:./
+      - ./server:/app
     env_file:
       - server.env
