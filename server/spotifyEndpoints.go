@@ -29,11 +29,27 @@ func authClient() *spotify.Client {
 }
 
 func  getSpotifyPlaylistSongs(c *gin.Context) {
+	// function should pass in spotify playlist id
 	results, err := Client.GetPlaylistItems(c, "59eBtjSiUluqHX1BweDZgu")
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	fmt.Println(results)
+	playlist := Playlist{
+		origin: "spotify",
+		song: []Songs{},
+	}
+
+	for _,item:= range results.Items{
+		//probably more efficent if we created this outside and just updated the values
+		song :=Songs{
+			name: item.Track.Track.Name,
+			spotifyId: string(item.Track.Track.ID),
+		}
+		playlist.song=append(playlist.song,song)
+		fmt.Println(item.Track.Track.Artists)// this returns a slice with a bunch of crap but the artist name is the first thing that shows up in the slice
+	}
+	//fmt.Printf("here  %v",playlist.song)
+
 
 	c.String(200, results.Items[2].Track.Track.Name)
 }
