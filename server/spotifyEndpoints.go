@@ -54,8 +54,9 @@ func  getSpotifyPlaylistSongs(c *gin.Context,) {
 		song := Song{
 			Name: item.Track.Track.Name,
 			SpotifyId: string(item.Track.Track.ID),
+			Artist: item.Track.Track.Artists[0].Name,
 		}
-		
+		//fmt.Println(item.Track.Track.Artists[0].Name)
 		playlist.Songs = append(playlist.Songs, song)
 
 	}
