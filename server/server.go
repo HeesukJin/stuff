@@ -25,7 +25,7 @@ func main() {
 	router.GET("/get_spotify_playlist_songs", getSpotifyPlaylistSongs)
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"message": "nice",
+			"message": "f",
 		})
 	})
 

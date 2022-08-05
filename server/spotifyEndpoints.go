@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-
+	"strings"
 	"github.com/gin-gonic/gin"
 	"github.com/zmb3/spotify/v2"
 	"github.com/zmb3/spotify/v2/auth"
@@ -28,28 +28,39 @@ func authClient() *spotify.Client {
 	return spotify.New(httpClient)
 }
 
-func  getSpotifyPlaylistSongs(c *gin.Context) {
+func  getSpotifyPlaylistSongs(c *gin.Context,) {
+	
+	url := c.Request.URL.Query()["spotifyPlaylistURL"][0]
+
+	//fmt.Println(url);
+	fmt.Println(strings.Split(strings.Split(url, "playlist/")[1], "?")[0])
+	playlistID:= spotify.ID(strings.Split(strings.Split(url, "playlist/")[1], "?")[0])
+	//playlistID := String(strings.Split(strings.Split(url, "playlist/")[1], "?")[0])
+
 	// function should pass in spotify playlist id
-	results, err := Client.GetPlaylistItems(c, "59eBtjSiUluqHX1BweDZgu")
+
+	
+	results, err := Client.GetPlaylistItems(c, playlistID)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
 	playlist := Playlist{
-		origin: "spotify",
-		song: []Songs{},
+		Origin: "spotify",
+		Songs: []Song{},
 	}
 
 	for _,item:= range results.Items{
 		//probably more efficent if we created this outside and just updated the values
-		song :=Songs{
-			name: item.Track.Track.Name,
-			spotifyId: string(item.Track.Track.ID),
+		song := Song{
+			Name: item.Track.Track.Name,
+			SpotifyId: string(item.Track.Track.ID),
 		}
-		playlist.song=append(playlist.song,song)
-		fmt.Println(item.Track.Track.Artists)// this returns a slice with a bunch of crap but the artist name is the first thing that shows up in the slice
+		
+		playlist.Songs = append(playlist.Songs, song)
+
 	}
-	//fmt.Printf("here  %v",playlist.song)
 
+	//fmt.Println(playlist)// this returns a slice with a bunch of crap but the artist name is the first thing that shows up in the slice
 
-	c.String(200, results.Items[2].Track.Track.Name)
+	c.JSON(200, playlist)
 }
