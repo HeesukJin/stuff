@@ -7,14 +7,14 @@ import (
 )
 
 type Playlist struct {
-	origin string
-	song   []Songs
+	Origin string
+	Songs   []Song
 }
-type Songs struct {
-	name      string
-	spotifyId string
-	yotubeID  string
-	artist    string
+type Song struct {
+	Name      string
+	SpotifyId string
+	YotubeID  string
+	Artist    string
 }
 
 var Client = authClient()

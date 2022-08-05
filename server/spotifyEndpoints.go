@@ -62,5 +62,5 @@ func  getSpotifyPlaylistSongs(c *gin.Context,) {
 
 	//fmt.Println(playlist)// this returns a slice with a bunch of crap but the artist name is the first thing that shows up in the slice
 
-	c.JSON(200, playlist)
+	c.JSON(200, playlist.Songs)
 }
