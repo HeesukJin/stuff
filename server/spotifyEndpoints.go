@@ -28,12 +28,11 @@ func authClient() *spotify.Client {
 	return spotify.New(httpClient)
 }
 
-func  getSpotifyPlaylistSongs(c *gin.Context,) {
+func  getSpotifyPlaylistSongs(c *gin.Context) {
 	
 	url := c.Request.URL.Query()["spotifyPlaylistURL"][0]
 
 	//fmt.Println(url);
-	fmt.Println(strings.Split(strings.Split(url, "playlist/")[1], "?")[0])
 	playlistID:= spotify.ID(strings.Split(strings.Split(url, "playlist/")[1], "?")[0])
 	//playlistID := String(strings.Split(strings.Split(url, "playlist/")[1], "?")[0])
 
@@ -62,6 +61,6 @@ func  getSpotifyPlaylistSongs(c *gin.Context,) {
 	}
 
 	//fmt.Println(playlist)// this returns a slice with a bunch of crap but the artist name is the first thing that shows up in the slice
-
 	c.JSON(200, playlist.Songs)
+	
 }
