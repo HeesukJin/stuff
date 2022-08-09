@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -29,20 +28,14 @@ func authClient() *spotify.Client {
 }
 
 func  getSpotifyPlaylistSongs(c *gin.Context) {
-	
 	url := c.Request.URL.Query()["spotifyPlaylistURL"][0]
-
-	//fmt.Println(url);
 	playlistID:= spotify.ID(strings.Split(strings.Split(url, "playlist/")[1], "?")[0])
-	//playlistID := String(strings.Split(strings.Split(url, "playlist/")[1], "?")[0])
-
-	// function should pass in spotify playlist id
-
 	
-	results, err := Client.GetPlaylistItems(c, playlistID)
+	results, err := SpotifyClient.GetPlaylistItems(c, playlistID)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
+
 	playlist := Playlist{
 		Origin: "spotify",
 		Songs: []Song{},
@@ -55,12 +48,10 @@ func  getSpotifyPlaylistSongs(c *gin.Context) {
 			SpotifyId: string(item.Track.Track.ID),
 			Artist: item.Track.Track.Artists[0].Name,
 		}
-		//fmt.Println(item.Track.Track.Artists[0].Name)
+
 		playlist.Songs = append(playlist.Songs, song)
-
 	}
+	getSongs(playlist)
 
-	//fmt.Println(playlist)// this returns a slice with a bunch of crap but the artist name is the first thing that shows up in the slice
-	c.JSON(200, playlist.Songs)
-	
+	//c.JSON(200, playlist.Songs)
 }

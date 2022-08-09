@@ -17,7 +17,8 @@ type Song struct {
 	Artist    string
 }
 
-var Client = authClient()
+var SpotifyClient = authClient()
+var YoutubeClient = authYoutube()
 
 func main() {
 	router := gin.Default()
