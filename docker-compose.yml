@@ -1,12 +1,10 @@
 version: "3.9"
 services:
-  server:
+  mongo:
     build:
-      context: ./server
+      context: ./mongo
       dockerfile: Dockerfile.local
     ports:
-      - "8080:8080"
+      - "10000:27017"
     volumes:
-      - ./server:/app
-    env_file:
-      - server.env
+      - ./mongo/vol:/data/db
