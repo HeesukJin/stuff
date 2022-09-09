@@ -5,6 +5,16 @@ services:
       context: ./mongo
       dockerfile: Dockerfile.local
     ports:
-      - "10000:27017"
+      - "27017:27017"
     volumes:
       - ./mongo/vol:/data/db
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.local
+    ports:
+      - "5000:8080"
+    volumes:
+      - ./server:/app
+    depends_on:
+    - mongo
