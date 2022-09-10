@@ -5,7 +5,7 @@ services:
       context: ./mongo
       dockerfile: Dockerfile.local
     ports:
-      - "27017:27017"
+      - "10000:27017"
     volumes:
       - ./mongo/vol:/data/db
   server:

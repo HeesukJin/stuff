@@ -1,32 +1,29 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"log"
-	"net/http"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"github.com/gin-gonic/gin"
 )
 
+type User struct{
+	Username string `json:"firstname" bson:"firstname"`
+	Password string `json:"password" bson:"password"`
+}
+
+var MongoDBClient = mongoDBConnect()
+
 func main() {
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://mongo:27017/"))
-    if err != nil {
-        panic(err)
-    }
+	router := gin.Default()
 
-	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
-        panic(err)
-	}
+	router.POST("/register", registerAccount)
+	router.POST("/login", login)
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello!")
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "f",
+		})
 	})
 
 	fmt.Printf("Starting server at port \n")
-
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		log.Fatal(err)
-	}
+	router.Run()
 }
