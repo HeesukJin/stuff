@@ -5,17 +5,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type User struct{
-	Username string `json:"firstname" bson:"firstname"`
-	Password string `json:"password" bson:"password"`
+type Env struct {
+	users interface {
+		register() ()
+	}
 }
 
-var MongoDBClient = mongoDBConnect()
 
 func main() {
 	router := gin.Default()
 
-	//router.POST("/register", registerAccount)
+	mysql := mysqlDBConnect()
+
+	env := &Env{
+		users: BookModel{DB: mysql},
+	}
+
+	router.POST("/register", registerAccount)
 	//router.POST("/login", login)
 
 	router.GET("/", func(c *gin.Context) {
