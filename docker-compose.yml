@@ -1,20 +1,32 @@
 version: "3.9"
 services:
-  mongo:
-    build:
-      context: ./mongo
-      dockerfile: Dockerfile.local
-    ports:
-      - "10000:27017"
-    volumes:
-      - ./mongo/vol:/data/db
-  server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile.local
-    ports:
-      - "5000:8080"
-    volumes:
-      - ./server:/app
-    depends_on:
-    - mongo
+  # mongo:
+  #   build:
+  #     context: ./mongo
+  #     dockerfile: Dockerfile.local
+  #   ports:
+  #     - 10000:27017
+  #   volumes:
+  #     - ./mongo/vol:/data/db
+    mysql:
+      build:
+        context: ./mysql
+        dockerfile: Dockerfile.local
+      ports:
+        - 20000:3306
+      volumes:
+        - ./mysql/vol:/var/lib/mysql
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+
+    server:
+      build:
+        context: ./server
+        dockerfile: Dockerfile.local
+      ports:
+        - 5000:8080
+      volumes:
+        - ./server:/app
+      depends_on:
+      - mongo
+      - mysql

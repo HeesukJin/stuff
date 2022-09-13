@@ -1,16 +1,22 @@
 package main
 
 import (
-	"context"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"database/sql"
+	_ "github.com/go-sql-driver/mysql"
 )
 
-func mongoDBConnect() *mongo.Client {
-	MongoDBClient, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://mongo:27017/"))
+type Database struct{
+	db *sql.DB
+}
+
+func mongoDBConnect() *Database {
+	mysqlDB, err := sql.Open("mysql", "root:root@tcp(localhost:20000)/")
+
     if err != nil {
         panic(err)
     }
 
-	return MongoDBClient
+	return &Database{
+		db: mysqlDB,
+	}
 }

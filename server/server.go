@@ -15,8 +15,8 @@ var MongoDBClient = mongoDBConnect()
 func main() {
 	router := gin.Default()
 
-	router.POST("/register", registerAccount)
-	router.POST("/login", login)
+	//router.POST("/register", registerAccount)
+	//router.POST("/login", login)
 
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
