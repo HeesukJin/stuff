@@ -5,21 +5,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Env struct {
-	users interface {
-		register() ()
-	}
-}
-
+var MySQLClient = mysqlDBConnect()
 
 func main() {
 	router := gin.Default()
-
-	mysql := mysqlDBConnect()
-
-	env := &Env{
-		users: BookModel{DB: mysql},
-	}
 
 	router.POST("/register", registerAccount)
 	//router.POST("/login", login)
@@ -29,6 +18,8 @@ func main() {
 			"message": "f",
 		})
 	})
+
+	router.POST("/login",login)
 
 	fmt.Printf("Starting server at port \n")
 	router.Run()

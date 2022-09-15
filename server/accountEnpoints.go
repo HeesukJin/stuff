@@ -1,83 +1,70 @@
 package main
 
 import (
-	"fmt"
-	"context"
-	"golang.org/x/crypto/bcrypt"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
+	"golang.org/x/crypto/bcrypt"
+	"fmt"
 )
-type User struct {
-	ID        string
-	Username  string
-	Email     string
-	password  string
-	pswdHash  string
-	CreatedAt string
-	Active    string
-	verHash   string
-	timeout   string
-}
-
 
 func registerAccount(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 
-	val := validPassword(password)
-	if val != nil{
-		c.JSON(200, gin.H{
-			"message": val,
-		})
+	usernameErr := validateUsername(username)
+	if usernameErr != nil{
+		c.String(401, usernameErr.Error())
+
+		return
 	}
+
+	passwordErr := valididatePassword(password)
+	if passwordErr != nil{
+		c.String(401, passwordErr.Error())
+
+		return
+	}
+
+	if usernameExists(username) == true {
+		c.String(401, "User already exists.")
+
+		return
+	}
+
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 8)
-	user := bson.D{{"username", username}, {"password", hashedPassword}}
-
-	usersCollection := MongoDBClient.Database("TradeOut").Collection("users")
-	result, err := usersCollection.InsertOne(context.TODO(), user)
-
 	if err != nil {
-        panic(err)
-	}
-	fmt.Println(result.InsertedID)
+		c.String(500, "Something went wrong on our end, please try again.")
 
-	c.JSON(200, gin.H{
-		"message": username + " " + password,
-	})
+		return
+	}
+
+	user := User{Username: username, PswdHash: string(hashedPassword)}
+
+	user.registerUser()
+
+	c.String(200, "Success")
 }
 
 	
 
 func login(c *gin.Context){
-	var dbUser User
-
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 
-	usersCollection := MongoDBClient.Database("TradeOut").Collection("users")
-	err:= usersCollection.FindOne(context.TODO(), bson.M{"username":username}).Decode(&dbUser)
-
-	if err != nil {
-		c.JSON(401, gin.H{
-			"message": "no user",
+	failureMessage := "Username or Password is incorrect"
+	if usernameExists(username) == false {
+		c.JSON(200, gin.H{
+			"message": failureMessage,
 		})
-		return
 	}
 
-	fmt.Println(dbUser.Password)
-
-	dbPass:= []byte(dbUser.Password)
-
-	passErr:= bcrypt.CompareHashAndPassword(dbPass, []byte(password))
-
-  	if passErr != nil{
-		c.JSON(401, gin.H{
-			"message": "bad pass",
-		})
-		return
-  	}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 8)
+	
+	if err != nil{
+		fmt.Println(err)
+	}
+	fmt.Println(hashedPassword)
 
 	c.JSON(200, gin.H{
-		"message": "f",
+		"message": "good",
 	})
 }
