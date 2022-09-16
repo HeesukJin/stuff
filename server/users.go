@@ -14,7 +14,7 @@ type User struct {
 	ID        string
 	Username  string
 	Email     string
-	PswdHash  string
+	HashedPwd  []byte
 	CreatedAt string
 	Active    string
 	verHash   string
@@ -23,25 +23,12 @@ type User struct {
 
 func (u *User) registerUser() error {
 	stmt := "INSERT INTO users VALUES(?, ?)"
-	res, err := MySQLClient.Exec(stmt, u.Username, u.PswdHash)
+	res, err := MySQLClient.Exec(stmt, u.Username, u.HashedPwd)
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println(res)
-	return nil
-}
-
-
-func (u *User) getUserByUsername() error {
-	stmt := "SELECT * FROM users WHERE username = ?"
-	row := MySQLClient.QueryRow(stmt, u.Username)
-	err := row.Scan(&u.ID, &u.Username, &u.Email, &u.PswdHash, &u.CreatedAt, &u.Active, &u.verHash, &u.timeout)
-	if err != nil {
-		fmt.Println("getUser() error selecting User, err:", err)
-		return err
-	}
-
 	return nil
 }
 
@@ -71,14 +58,19 @@ func validateUsername(username string) error {
 	return errors.New("username length must be greater than 4 and less than 51 characters")
 }
 
-func usernameExists(username string) (exists bool) {
-	exists = true
-	stmt := "SELECT username FROM users WHERE username = ?"
+func userExists(username string) User {
+	stmt := "SELECT username, hashed_pwd FROM users WHERE username = ?"
 	row := MySQLClient.QueryRow(stmt, username)
 	var uID string
+	var pwd []byte
 
-	if row.Scan(&uID) == sql.ErrNoRows {
-		return false
+	user := User{Username: ""}
+
+	if row.Scan(&uID, &pwd) == sql.ErrNoRows {
+		return user
 	}
-	return exists
+	
+	user.Username = uID
+	user.HashedPwd = pwd
+	return user
 }

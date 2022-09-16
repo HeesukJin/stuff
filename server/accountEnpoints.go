@@ -20,24 +20,22 @@ func registerAccount(c *gin.Context) {
 	passwordErr := valididatePassword(password)
 	if passwordErr != nil{
 		c.String(401, passwordErr.Error())
-
 		return
 	}
 
-	if usernameExists(username) == true {
+	if userExists(username).Username != "" {
 		c.String(401, "User already exists.")
-
 		return
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 8)
 	if err != nil {
 		c.String(500, "Something went wrong on our end, please try again.")
-
 		return
 	}
 
-	user := User{Username: username, PswdHash: string(hashedPassword)}
+	user := User{Username: username, HashedPwd: hashedPassword}
+	fmt.Println(user.HashedPwd)
 
 	user.registerUser()
 
@@ -50,21 +48,19 @@ func login(c *gin.Context){
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 
-	failureMessage := "Username or Password is incorrect"
-	if usernameExists(username) == false {
-		c.JSON(200, gin.H{
-			"message": failureMessage,
-		})
-	}
+	failureMessage := "Username or Password is incorrect."
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 8)
+	user := userExists(username)
+
+	if user.Username == "" {
+		c.String(401, failureMessage)
+		return
+	}
 	
-	if err != nil{
-		fmt.Println(err)
+	if bcrypt.CompareHashAndPassword(user.HashedPwd, []byte(password)) != nil {
+		c.String(401, failureMessage)
+		return
 	}
-	fmt.Println(hashedPassword)
 
-	c.JSON(200, gin.H{
-		"message": "good",
-	})
+	c.String(200, "Success")
 }
