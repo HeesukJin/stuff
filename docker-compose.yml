@@ -19,6 +19,15 @@ services:
       environment:
         - MYSQL_ROOT_PASSWORD=root
 
+    redis:
+      build:
+        context: ./redis
+        dockerfile: Dockerfile.local
+      ports:
+        - 9090:6379
+      volumes:
+        - ./redis/vol:/data
+
     server:
       build:
         context: ./server
@@ -30,3 +39,4 @@ services:
       depends_on:
      # - mongo
       - mysql
+      - redis
