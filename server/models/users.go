@@ -58,8 +58,9 @@ func ValidateUsername(username string) error {
 }
 
 func UserExists(username string) User {
-	stmt := "SELECT username, hashed_pwd FROM users WHERE username = ?"
+	stmt := "SELECT uid, username, hashed_pwd FROM users WHERE username = ?"
 	row := MySQLClient.QueryRow(stmt, username)
+
 	var uuid string
 	var verifiedUsername string
 	var pwd []byte
