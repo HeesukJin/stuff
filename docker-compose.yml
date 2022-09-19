@@ -28,5 +28,5 @@ services:
       volumes:
         - ./server:/app
       depends_on:
-      - mongo
+     # - mongo
       - mysql
