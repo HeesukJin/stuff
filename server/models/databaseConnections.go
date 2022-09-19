@@ -14,6 +14,6 @@ func MysqlDBConnect() {
     }
 	err = MySQLClient.Ping()
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 }

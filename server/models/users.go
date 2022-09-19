@@ -54,11 +54,14 @@ func ValidateUsername(username string) error {
 	if 5 <= len(username) && len(username) <= 50 {
 		return nil
 	}
+	fmt.Println(username)
+
 	return errors.New("username length must be greater than 4 and less than 51 characters")
 }
 
 func UserExists(username string) User {
-	stmt := "SELECT username, hashed_pwd FROM users WHERE username = ?"
+	stmt := "SELECT username, uid, hashed_pwd FROM users WHERE username = ?"
+
 	row := MySQLClient.QueryRow(stmt, username)
 	var uuid string
 	var verifiedUsername string
