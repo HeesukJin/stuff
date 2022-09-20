@@ -3,6 +3,9 @@ package models
 import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gin-contrib/sessions/redis"
+	"github.com/gin-contrib/sessions"
+
 )
 
 var MySQLClient *sql.DB
@@ -19,4 +22,11 @@ func MySQLDBConnect() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func RedisConnect() sessions.Store {
+	store, _ := redis.NewStore(10, "tcp", "host.docker.internal:9090", "", []byte("secret"))
+	store.Options(sessions.Options{MaxAge: 10})
+
+	return store
 }

@@ -1,7 +1,7 @@
 package routes
 
 import (
-	_ "fmt"
+	"fmt"
 	"net/http"
 	"tradeout-server/models"
 	"github.com/gin-gonic/gin"
@@ -11,7 +11,6 @@ import (
 
 const userkey = "ID"
 var secret = []byte("secret")
-
 
 func RegisterAccount(c *gin.Context) {
 	username := c.PostForm("username")
@@ -43,7 +42,17 @@ func RegisterAccount(c *gin.Context) {
 	user := models.User{Username: username, HashedPwd: hashedPassword}
 	user.RegisterUser()
 
-	c.String(200, "Success")
+	session := sessions.Default(c)
+
+	if count == 10 {
+		session.Clear()
+	} else {
+		session.Set("user", count)
+	}
+	session.Save() 
+	
+
+	c.JSON(200, gin.H{"count": session.ID()})
 }
 
 func Login(c *gin.Context) {
