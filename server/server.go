@@ -17,6 +17,7 @@ var secret = []byte("secret")
 
 func main() {
 	models.MysqlDBConnect()
+
 	router := gin.Default()
 	store := cookie.NewStore(secret)
 	router.Use(sessions.Sessions("mysession", store))
