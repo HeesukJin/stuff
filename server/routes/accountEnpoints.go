@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"fmt"
+	_ "fmt"
 	"net/http"
 	"tradeout-server/models"
 	"github.com/gin-gonic/gin"
@@ -44,13 +44,8 @@ func RegisterAccount(c *gin.Context) {
 
 	session := sessions.Default(c)
 
-	if count == 10 {
-		session.Clear()
-	} else {
-		session.Set("user", count)
-	}
+	session.Set("user", user)
 	session.Save() 
-	
 
 	c.JSON(200, gin.H{"count": session.ID()})
 }
