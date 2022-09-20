@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-
 	"tradeout-server/models"
 	"tradeout-server/routes"
 
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+
+	"github.com/gin-contrib/sessions"
+  	"github.com/gin-contrib/sessions/redis"
 )
 
 const userkey = "user"
@@ -16,11 +16,9 @@ const userkey = "user"
 var secret = []byte("secret")
 
 func main() {
-	models.MysqlDBConnect()
+	models.MySQLDBConnect()
 
 	router := gin.Default()
-	store := cookie.NewStore(secret)
-	router.Use(sessions.Sessions("mysession", store))
 
 	router.POST("/register", routes.RegisterAccount)
 	router.POST("/login", routes.Login)
@@ -31,15 +29,33 @@ func main() {
 		private.GET("/me", routes.Me)
 		private.GET("/status", routes.Status)
 	}
+
+
+	store, _ := redis.NewStore(10, "tcp", "host.docker.internal:9090", "", []byte("secret"))
+	store.Options(sessions.Options{MaxAge: 10})
+
+	router.Use(sessions.Sessions("mysession", store))
+
 	router.GET("/", func(c *gin.Context) {
 		session := sessions.Default(c)
-		message := "Bad"
-		if session.Get("ID") != nil {
-			message = session.Get("name").(string)
+		var count int
+		v := session.Get("count")
+		if v == nil {
+			count = 0
+		} else {
+			count = v.(int)
+			count++
 		}
-		c.JSON(200, gin.H{
-			"message": message,
-		})
+
+		if count == 10 {
+			session.Clear()
+		} else {
+			session.Set("count", count)
+		}
+		session.Save() 
+
+		
+		c.JSON(200, gin.H{"count": count})
 	})
 
 	fmt.Printf("Starting server at port \n")

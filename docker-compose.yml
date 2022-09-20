@@ -18,6 +18,8 @@ services:
         - ./mysql/vol:/var/lib/mysql
       environment:
         - MYSQL_ROOT_PASSWORD=root
+      healthcheck:
+        test: ["CMD", "mysqladmin", "-p$$MYSQL_ROOT_PASSWORD", "ping"]
 
     redis:
       build:
@@ -27,6 +29,8 @@ services:
         - 9090:6379
       volumes:
         - ./redis/vol:/data
+      healthcheck:
+        test: ["CMD", "redis-cli", "ping"]
 
     server:
       build:
@@ -37,6 +41,7 @@ services:
       volumes:
         - ./server:/app
       depends_on:
-     # - mongo
-      - mysql
-      - redis
+        redis:
+          condition: service_healthy
+        mysql:
+          condition: service_healthy

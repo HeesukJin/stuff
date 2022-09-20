@@ -4,10 +4,9 @@ import (
 	_ "fmt"
 	"net/http"
 	"tradeout-server/models"
-
-	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"github.com/gin-contrib/sessions"
 )
 
 const userkey = "ID"
@@ -48,7 +47,6 @@ func RegisterAccount(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
-	session := sessions.Default(c)
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 
@@ -63,14 +61,6 @@ func Login(c *gin.Context) {
 
 	if bcrypt.CompareHashAndPassword(user.HashedPwd, []byte(password)) != nil {
 		c.String(401, failureMessage)
-		return
-	}
-
-	// Save the username in the session
-	session.Set(userkey, user.UUID) // In real world usage you'd set this to the users ID
-
-	if err := session.Save(); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
 		return
 	}
 
