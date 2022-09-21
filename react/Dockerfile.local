@@ -1,1 +1,6 @@
 FROM node:current
+
+WORKDIR /app
+COPY ./client /app
+
+CMD [ "npm", "start" ]

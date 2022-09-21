@@ -45,3 +45,12 @@ services:
           condition: service_healthy
         mysql:
           condition: service_healthy
+          
+    react:
+      build:
+        context: ./react
+        dockerfile: Dockerfile.local
+      ports:
+        - 1000:3000
+      volumes:
+        - ./react/client:/app

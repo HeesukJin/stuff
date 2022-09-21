@@ -6,6 +6,7 @@ import (
 	"tradeout-server/routes"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 
 	"github.com/gin-contrib/sessions"
 )
@@ -19,6 +20,9 @@ func main() {
 
 	models.MySQLDBConnect()
 	router.Use(sessions.Sessions("mysession", models.RedisConnect()))
+	//only temporary
+	router.Use(cors.Default())
+
 
 	router.POST("/register", routes.RegisterAccount)
 	router.POST("/login", routes.Login)
