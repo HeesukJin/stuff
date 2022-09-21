@@ -46,11 +46,11 @@ services:
         mysql:
           condition: service_healthy
           
-    react:
+    nextjs:
       build:
-        context: ./react
+        context: ./nextjs
         dockerfile: Dockerfile.local
       ports:
         - 1000:3000
       volumes:
-        - ./react/client:/app
+        - ./nextjs/client:/app

@@ -1,4 +1,5 @@
 mongo/vol/
 mysql/vol/
 redis/vol/
-react/client/node_modules/
+nextjs/client/.next/
+nextjs/client/node_modules/
