@@ -47,7 +47,7 @@ func RegisterAccount(c *gin.Context) {
 	session.Set("user", user)
 	session.Save() 
 
-	c.JSON(200, gin.H{"count": session.ID()})
+	c.JSON(200, gin.H{"sessionID": session.ID()})
 }
 
 func Login(c *gin.Context) {

@@ -1,5 +1,5 @@
 mongo/vol/
 mysql/vol/
 redis/vol/
-nextjs/client/.next/
-nextjs/client/node_modules/
+nextjs/tradeout/.next/
+nextjs/tradeout/node_modules/

@@ -1,6 +1,6 @@
 FROM node:current
 
 WORKDIR /app
-COPY ./client /app
+COPY ./tradeout /app
 
 CMD [ "npm", "run", "dev" ]

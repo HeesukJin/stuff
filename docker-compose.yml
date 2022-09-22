@@ -8,49 +8,49 @@ services:
   #     - 10000:27017
   #   volumes:
   #     - ./mongo/vol:/data/db
-    mysql:
-      build:
-        context: ./mysql
-        dockerfile: Dockerfile.local
-      ports:
-        - 20000:3306
-      volumes:
-        - ./mysql/vol:/var/lib/mysql
-      environment:
-        - MYSQL_ROOT_PASSWORD=root
-      healthcheck:
-        test: ["CMD", "mysqladmin", "-p$$MYSQL_ROOT_PASSWORD", "ping"]
+  mysql:
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile.local
+    ports:
+      - 20000:3306
+    volumes:
+      - ./mysql/vol:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    healthcheck:
+      test: ["CMD", "mysqladmin", "-p$$MYSQL_ROOT_PASSWORD", "ping"]
 
-    redis:
-      build:
-        context: ./redis
-        dockerfile: Dockerfile.local
-      ports:
-        - 9090:6379
-      volumes:
-        - ./redis/vol:/data
-      healthcheck:
-        test: ["CMD", "redis-cli", "ping"]
+  redis:
+    build:
+      context: ./redis
+      dockerfile: Dockerfile.local
+    ports:
+      - 9090:6379
+    volumes:
+      - ./redis/vol:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
 
-    server:
-      build:
-        context: ./server
-        dockerfile: Dockerfile.local
-      ports:
-        - 5000:8080
-      volumes:
-        - ./server:/app
-      depends_on:
-        redis:
-          condition: service_healthy
-        mysql:
-          condition: service_healthy
-          
-    nextjs:
-      build:
-        context: ./nextjs
-        dockerfile: Dockerfile.local
-      ports:
-        - 1000:3000
-      volumes:
-        - ./nextjs/client:/app
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.local
+    ports:
+      - 5000:8080
+    volumes:
+      - ./server:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+
+  nextjs:
+    build:
+      context: ./nextjs
+      dockerfile: Dockerfile.local
+    ports:
+      - 1000:3000
+    volumes:
+      - ./nextjs/tradeout:/app
